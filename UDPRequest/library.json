@@ -1,0 +1,17 @@
+{
+    "name": "UDPRequest",
+    "version": "1.0.0",
+    "description": "Request data via UDP",
+    "keywords": "udp",
+    "authors": [
+        {
+            "name": "Albert Mavrin",
+            "email": "albert.mavrin@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+    },
+    "frameworks": "Arduino",
+    "platforms": "*"
+}

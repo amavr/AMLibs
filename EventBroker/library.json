@@ -1,0 +1,17 @@
+{
+    "name": "EventBroker",
+    "version": "1.0.0",
+    "description": "Simple tool for subscription and publishing",
+    "keywords": "sub,pub,subscription,publishing,event",
+    "authors": [
+        {
+            "name": "Albert Mavrin",
+            "email": "albert.mavrin@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+    },
+    "frameworks": "Arduino",
+    "platforms": "*"
+}

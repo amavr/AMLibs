@@ -1,0 +1,17 @@
+{
+    "name": "DicList",
+    "version": "1.0.0",
+    "description": "Primitive dictionary <char*, char*> without deletion keys",
+    "keywords": "dictionary",
+    "authors": [
+        {
+            "name": "Albert Mavrin",
+            "email": "albert.mavrin@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+    },
+    "frameworks": "Arduino",
+    "platforms": "*"
+}

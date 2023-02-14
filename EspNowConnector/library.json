@@ -1,0 +1,17 @@
+{
+    "name": "EspNowConnector",
+    "version": "1.0.0",
+    "description": "ESP-NOW communicator",
+    "keywords": "dictionary",
+    "authors": [
+        {
+            "name": "Albert Mavrin",
+            "email": "albert.mavrin@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+    },
+    "frameworks": "Arduino",
+    "platforms": "*"
+}

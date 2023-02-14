@@ -1,0 +1,17 @@
+{
+    "name": "ATools",
+    "version": "1.0.0",
+    "description": "Usefull functions",
+    "keywords": "dictionary",
+    "authors": [
+        {
+            "name": "Albert Mavrin",
+            "email": "albert.mavrin@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "dependencies": {
+    },
+    "frameworks": "Arduino",
+    "platforms": "*"
+}
