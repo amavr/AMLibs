@@ -6,7 +6,6 @@
 class ATools
 {
 public:
-
     // нормализация пробелов + trim
     static void normalize(const char *sour, char *dest)
     {
@@ -92,7 +91,7 @@ public:
     {
         char buf[18];
         snprintf(buf, sizeof(buf), "%02x:%02x:%02x:%02x:%02x:%02x",
-           mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+                 mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
         strcpy(chars, buf);
     }
 
@@ -108,6 +107,48 @@ public:
         {
             bytes[i] = strtol(t_ptr, NULL, 16);
             t_ptr = strtok(NULL, ":");
+            i++;
+        }
+    }
+
+    static bool macValidate(char *mac)
+    {
+        char mac_address[18];
+        char *t_ptr;
+
+        strcpy(mac_address, mac);
+        t_ptr = strtok(mac_address, ":");
+
+        int i = 0;
+        while (t_ptr != NULL)
+        {
+            int octet = strtol(t_ptr, NULL, 16);
+            if (octet < 0 || octet > 255)
+                return false;
+
+            t_ptr = strtok(NULL, ":");
+            i++;
+        }
+
+        // loop should've covered exactly 6 octets
+        if (i != 6)
+            return false;
+
+        return true;
+    }
+
+    static void split(const char *line, char delim, void (*cb)(const char *part, int index))
+    {
+        char *ptr;
+        char buf[strlen(line) + 1];
+        strcpy(buf, line);
+
+        ptr = strtok(buf, ":");
+        int i = 0;
+        while (ptr != NULL)
+        {
+            cb(ptr, i);
+            ptr = strtok(NULL, ":");
             i++;
         }
     }

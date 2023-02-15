@@ -4,8 +4,8 @@
 
 struct Item
 {
-    const char *id; // ключ
-    const char *data;     // какие-то данные
+    const char *id;   // ключ
+    const char *data; // какие-то данные
     Item *next;
 };
 
@@ -48,7 +48,7 @@ public:
 
     const char *get(const char *id)
     {
-        Item * item = find(id);
+        Item *item = find(id);
         return item == NULL ? NULL : item->data;
     }
 
