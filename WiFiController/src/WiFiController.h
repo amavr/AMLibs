@@ -78,7 +78,7 @@ void WiFiController::connect(bool isFirstTime)
                 // если не было изменений параметров
                 // все равно проверять подключение,
                 // может роутер выключался
-                WiFi.disconnect(true, true);
+                WiFi.disconnect(true);
                 break;
             }
         }
