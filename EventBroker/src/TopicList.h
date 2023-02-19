@@ -5,7 +5,7 @@
 
 struct Topic
 {
-    const char *name;
+    char *name;
     char *data = NULL;
     SubList *subscribers;
     Topic *next;
@@ -27,6 +27,22 @@ public:
     int Count()
     {
         return count;
+    }
+
+    void clear()
+    {
+        Topic *curr = head;
+        while (curr != NULL)
+        {
+            curr = curr->next;
+
+            head->subscribers->clear();
+            free(head->name);
+            free(head->subscribers);
+            free(head);
+            head = curr;
+        }
+        count = 0;
     }
 
     Topic *find(const char *topicName)
@@ -57,7 +73,8 @@ public:
             count++;
             // создание нового узла
             topic = new Topic;
-            topic->name = topicName;
+            topic->name = (char *)malloc(strlen(topicName) + 1);
+            strcpy(topic->name, topicName);
             topic->subscribers = new SubList;
             topic->next = NULL;
 
@@ -68,7 +85,7 @@ public:
                 curr = curr->next;
             }
             // нет предпоследнего элемента - список пуст
-            if(prev == NULL)
+            if (prev == NULL)
             {
                 head = topic;
             }
@@ -80,6 +97,43 @@ public:
             }
         }
         return topic;
+    }
+
+    int getSize()
+    {
+        int len = 0;
+        Topic *curr = head;
+        while (curr != NULL)
+        {
+            // сохранять надо только если есть подписчики
+            if (curr->subscribers->Count() > 0)
+            {
+                len += strlen(curr->name) + 1 + curr->subscribers->getSize();
+            }
+            curr = curr->next;
+        }
+        return len;
+    }
+
+    // заполнить подготовленный снаружи буффер
+    void fillTo(char *buf, char separator = '|')
+    {
+        int len = 0;
+        Topic *curr = head;
+        while (curr != NULL)
+        {
+            // сохранять надо только если есть подписчики
+            if (curr->subscribers->Count() > 0)
+            {
+                strcpy(buf + len, curr->name);
+                len += strlen(curr->name);
+                buf[len++] = separator;
+                len += curr->subscribers->fillTo(buf + len);
+                buf[len++] = '\n';
+            }
+            curr = curr->next;
+        }
+        // buf[len - 1] = '\0';
     }
 
     void forEach(void (*callback)(Topic *topic))
