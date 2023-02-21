@@ -4,8 +4,8 @@
 
 struct Item
 {
-    const char *id; // ключ
-    const char *data;     // какие-то данные
+    char id[20];   // ключ
+    char data[18]; // mac address
     Item *next;
 };
 
@@ -48,7 +48,7 @@ public:
 
     const char *get(const char *id)
     {
-        Item * item = find(id);
+        Item *item = find(id);
         return item == NULL ? NULL : item->data;
     }
 
@@ -62,7 +62,7 @@ public:
             // создание узла
             count++;
             item = new Item;
-            item->id = id;
+            strcpy(item->id, id);
             item->next = NULL;
 
             // пустой список? тогда в самое начало
@@ -81,11 +81,7 @@ public:
                 curr->next = item;
             }
         }
-        else
-        {
-            delete item->data;
-        }
-        item->data = strdup(data);
+        strcpy(item->data, data);
         return item;
     }
 
@@ -99,5 +95,37 @@ public:
             curr = curr->next;
             i++;
         }
+    }
+
+    int getSize()
+    {
+        int len = 0;
+        Item *curr = head;
+        while (curr != NULL)
+        {
+            len += strlen(curr->id) + strlen(curr->data) + 2;
+            // Serial.printf("%s(%d)-%s(%d)\n", curr->id, strlen(curr->id), curr->data, strlen(curr->data));
+            curr = curr->next;
+        }
+        return len + 1;
+    }
+
+    // заполнить подготовленный снаружи буффер
+    void fillTo(char *buf, char separator = '\t')
+    {
+        int len = 0;
+        Item *curr = head;
+        while (curr != NULL)
+        {
+            strcpy(buf + len, curr->id);
+            len += strlen(curr->id);
+            buf[len++] = separator;
+            strcpy(buf + len, curr->data);
+            len += strlen(curr->data);
+            buf[len++] = '\n';
+
+            curr = curr->next;
+        }
+        buf[len] = '\0';
     }
 };

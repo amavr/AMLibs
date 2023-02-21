@@ -65,3 +65,8 @@ bool getBrokerAddr(char *addr)
 {
     return UDPRequest("get role broker", addr);
 }
+
+bool getGateAddr(char *addr)
+{
+    return UDPRequest("get role gate", addr);
+}

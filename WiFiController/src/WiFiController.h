@@ -27,7 +27,7 @@ class WiFiController
 {
 public:
     WiFiController();
-    void connect(bool isFirtsTime);
+    void connect(bool isFirtsTime, WiFiMode mode = WIFI_STA);
     void disconnect();
     void init();
     void tick();
@@ -44,12 +44,14 @@ WiFiController::WiFiController()
 {
 }
 
-void WiFiController::connect(bool isFirstTime)
+void WiFiController::connect(bool isFirstTime, WiFiMode mode)
 {
     if (isFirstTime)
     {
         init();
     }
+
+    WiFi.mode(mode);
 
     while (true)
     {
@@ -87,7 +89,7 @@ void WiFiController::connect(bool isFirstTime)
             break;
         }
     }
-    Serial.println("done");
+    Serial.printf("done! Channel: %d\n", WiFi.channel());
     Serial.println(WiFi.localIP());
 }
 

@@ -5,15 +5,15 @@
 #include <SubList.h>
 #include <TopicFile.h>
 
-void onSub(const char *mac)
+void printSub(const char *mac)
 {
     Serial.printf("\t%s\n", mac);
 }
 
-void onTopic(Topic *topic)
+void printTopic(Topic *topic)
 {
     Serial.println(topic->name);
-    topic->subscribers->forEach(onSub);
+    topic->subscribers->forEach(printSub);
 }
 
 class EventBroker
@@ -29,14 +29,16 @@ public:
 
     void load()
     {
+        Serial.println("Subscription loading");
         TopicFile::load("/subs.txt", topics);
-        topics->forEach(onTopic);
+        topics->forEach(printTopic);
     }
 
     void save()
     {
+        Serial.println("Subscription saving");
         TopicFile::save("/subs.txt", topics);
-        topics->forEach(onTopic);
+        topics->forEach(printTopic);
     }
 
     SubList *publish(const char *topicName, const char *data)
