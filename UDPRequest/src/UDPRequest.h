@@ -7,7 +7,6 @@
 #include <WiFi.h>
 #endif
 #include <WiFiUdp.h>
-#include <ATools.h>
 
 const uint16_t UDP_PORT = 2222;
 WiFiUDP udp;
@@ -64,7 +63,10 @@ void setBrokerAddr()
 
 bool getBrokerAddr(char *addr)
 {
-    bool res = UDPRequest("get role broker", addr);
-    Serial.printf("broker mac:[%s]\n", addr);
-    return res && ATools::macValidate(addr);
+    return UDPRequest("get role broker", addr);
+}
+
+bool getGateAddr(char *addr)
+{
+    return UDPRequest("get role gate", addr);
 }

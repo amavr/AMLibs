@@ -9,6 +9,7 @@
 #include <ESP8266WiFi.h>
 #else
 #include <WiFi.h>
+typedef WiFiMode_t WiFiMode;
 #endif
 
 // сайт настроек для поключения к WiFi
@@ -22,12 +23,20 @@ struct TWiFiParams
     char pass[20] = "x";
 };
 
+void xDelay(uint16_t timeout)
+{
+#ifdef ESP8266
+    delay(timeout);
+#else
+    vTaskDelay(timeout);
+#endif
+}
 
 class WiFiController
 {
 public:
     WiFiController();
-    void connect(bool isFirtsTime);
+    void connect(bool isFirtsTime, WiFiMode mode = WIFI_STA);
     void disconnect();
     void init();
     void tick();
@@ -44,24 +53,26 @@ WiFiController::WiFiController()
 {
 }
 
-void WiFiController::connect(bool isFirstTime)
+void WiFiController::connect(bool isFirstTime, WiFiMode mode)
 {
     if (isFirstTime)
     {
         init();
     }
 
+    WiFi.mode(mode);
+
     while (true)
     {
         bool changed = false;
         loadWiFiParams();
-        WiFi.begin(cfg.ssid, cfg.pass);
+        WiFi.begin(cfg.ssid, cfg.pass, 0);
         unsigned long started = millis();
         uint32_t period = cfg.connectPeriod * 1000;
         Serial.printf("Connecting to %s", cfg.ssid);
         while (WiFi.status() != WL_CONNECTED)
         {
-            delay(500);
+            xDelay(500);
             Serial.print('.');
             if (millis() - started > period)
             {
@@ -78,7 +89,7 @@ void WiFiController::connect(bool isFirstTime)
                 // если не было изменений параметров
                 // все равно проверять подключение,
                 // может роутер выключался
-                WiFi.disconnect(true, true);
+                WiFi.disconnect(true);
                 break;
             }
         }
@@ -87,7 +98,7 @@ void WiFiController::connect(bool isFirstTime)
             break;
         }
     }
-    Serial.println("done");
+    Serial.printf("done! Channel: %d\n", WiFi.channel());
     Serial.println(WiFi.localIP());
 }
 

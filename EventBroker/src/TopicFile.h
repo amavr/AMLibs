@@ -128,8 +128,8 @@ public:
         {
             if (FileFS.exists(fileName))
             {
-                File configFile = FileFS.open(fileName, "r");
-                if (!configFile)
+                File subFile = FileFS.open(fileName, "r");
+                if (!subFile)
                 {
                     Serial.println("Reading config file failed");
                 }
@@ -137,18 +137,22 @@ public:
                 {
                     topics->clear();
 
-                    // we could open the file
-                    while (configFile.available())
+                    size_t flen = subFile.size();
+
+                    char buf[flen + 1];
+                    size_t read = subFile.readBytes(buf, flen);
+                    buf[flen] = '\0';
+
+                    GParser data(buf, '\n');
+                    int count = data.split();
+                    for (int i = 0; i < count; i++)
                     {
-                        // Lets read line by line from the file
-                        String s = configFile.readStringUntil('\n');
-                        if (s.length() > 2)
-                        {
-                            parseToTopic(s.c_str(), topics);
-                        }
+                        Serial.printf("%d: %s\n", i, data[i]);
+                        parseToTopic(data[i], topics);
                     }
-                    configFile.close();
+                    subFile.close();
                     res = true;
+                    Serial.printf("load %d topics, data size: %d\n", topics->Count(), topics->getSize());
                 }
             }
             else
@@ -168,18 +172,21 @@ public:
     {
         if (FileFS.begin())
         {
-            File configFile = FileFS.open(fileName, "w");
-            if (configFile)
+            File subFile = FileFS.open(fileName, "w");
+            if (subFile)
             {
 
                 int len = topics->getSize();
+
                 char *txt = (char *)malloc(len);
+                memset(txt, 0, len);
                 topics->fillTo(txt);
 
-                configFile.println(txt);
-                configFile.close();
+                subFile.println(txt);
+                subFile.close();
 
-                Serial.println("Saving config file OK");
+                Serial.printf(txt);
+                free(txt);
             }
             else
             {
@@ -215,8 +222,6 @@ public:
 private:
     static void parseToTopic(const char *line, TopicList *topics)
     {
-        Serial.printf("[%s]\n", line);
-
         char x[strlen(line) + 1];
         strcpy(x, line);
 

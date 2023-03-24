@@ -73,7 +73,8 @@ public:
             count++;
             // создание нового узла
             topic = new Topic;
-            topic->name = (char *)malloc(strlen(topicName) + 1);
+            size_t len = strlen(topicName);
+            topic->name = (char *)malloc(len + 1);
             strcpy(topic->name, topicName);
             topic->subscribers = new SubList;
             topic->next = NULL;
@@ -125,15 +126,18 @@ public:
             // сохранять надо только если есть подписчики
             if (curr->subscribers->Count() > 0)
             {
+                // Serial.printf("topic [%s]:%d\n", curr->name, len);
                 strcpy(buf + len, curr->name);
+                // buf[len++] = '\0';
                 len += strlen(curr->name);
                 buf[len++] = separator;
                 len += curr->subscribers->fillTo(buf + len);
+                // Serial.printf("buffer length: %d\n%s\n", len + 1, buf);
                 buf[len++] = '\n';
             }
             curr = curr->next;
         }
-        // buf[len - 1] = '\0';
+        buf[len] = '\0';
     }
 
     void forEach(void (*callback)(Topic *topic))

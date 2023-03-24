@@ -10,9 +10,24 @@ struct Sub
 
 class SubList
 {
-private:
+protected:
     Sub *head;
     int count;
+
+    static void addTo(SubList *me, const char *id)
+    {
+        me->add(id);
+    }
+
+    void addAll(SubList *others, void (*callback)(SubList *me, const char *id))
+    {
+        Sub *curr = others->head;
+        while (curr != NULL)
+        {
+            callback(this, curr->id);
+            curr = curr->next;
+        }
+    }
 
 public:
     SubList()
@@ -59,14 +74,16 @@ public:
         return find(id) != NULL;
     }
 
-    void add(const char *id)
+    Sub *add(const char *id)
     {
+        Sub *sub = find(id);
+
         // если не найден, то создать и добавить
-        if (!exists(id))
+        if (sub == NULL)
         {
             // создание узла
             count++;
-            Sub *sub = new Sub;
+            sub = new Sub;
             sub->id = (char *)malloc(strlen(id) + 1);
             strcpy(sub->id, id);
             sub->next = NULL;
@@ -89,9 +106,51 @@ public:
                 curr->next = sub;
             }
         }
+        return sub;
     }
 
-    int getSize()
+    void addList(SubList *others)
+    {
+        if (others == NULL || others->Count() == 0)
+        {
+            return;
+        }
+
+        addAll(others, SubList::addTo);
+    }
+
+    void del(Sub *sub)
+    {
+        if (sub != NULL)
+        {
+            Sub *curr = head;
+            Sub *prev = NULL;
+            while (curr != NULL)
+            {
+
+                if(sub == curr)
+                {
+                    if(prev != NULL)
+                    {
+                        prev->next = sub->next;
+                    }
+                    delete sub;
+                }
+
+                prev = curr;
+                curr = curr->next;
+            }
+        }
+    }
+
+    void del(const char *id)
+    {
+        Sub *sub = find(id);
+        del(sub);
+    }
+
+    int
+    getSize()
     {
         int len = 0;
         Sub *curr = head;
